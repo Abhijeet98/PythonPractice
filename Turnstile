@@ -1,0 +1,52 @@
+from collections import deque
+
+def getTimes(numCustomers, arrTime, direction):
+    # WRITE YOUR CODE HERE
+    
+    entry, exit = deque(), deque()
+    for i, d in enumerate(direction):
+        if d == 0:
+            entry.appendleft(i)
+        else: 
+            exit.appendleft(i)
+    
+    
+    prev_d = -1
+    kt = 0
+    ask = [-1]*numCustomers
+    while entry and exit:
+        entry1, exit1 = arrTime[entry[-1]], arrTime[exit[-1]]
+        if entry1>kt and exit1>kt:
+            if exit1<=entry1:
+                kt = exit1
+                ask[exit.pop()] = kt
+                prev_d = 1
+            else:
+                kt = entry1
+                ask[entry.pop()] = kt
+                prev_d = 0 
+        elif entry1>kt:
+                ask[exit.pop()] = kt
+                prev_d = 1 
+        elif exit1 > kt:
+             ask[entry.pop()]=kt
+             prev_d = 0 
+        else:
+            if prev_d == -1 or prev_d == 1:
+                ask[exit.pop()]=kt
+            else:
+                ask[entry.pop()] = kt
+        kt = kt + 1
+        
+    que  = entry if  entry else exit
+    while que:
+        qtime = arrTime[que[-1]]
+        if qtime > kt:
+            kt = qtime
+        ask[que.pop()] = kt
+        kt = kt+1
+    return ask
+    
+    
+               
+        
